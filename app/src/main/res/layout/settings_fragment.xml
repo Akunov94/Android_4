@@ -3,9 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#D500F9"
     tools:context=".ui.settings.SettingsFragment">
 
     <TextView
+        android:gravity="center"
+        android:textSize="30sp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="Hello" />

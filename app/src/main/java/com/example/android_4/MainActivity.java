@@ -1,6 +1,8 @@
 package com.example.android_4;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.lifecycle.Observer;
 import androidx.viewpager.widget.ViewPager;
 
@@ -27,13 +29,24 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         ui = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(ui.getRoot());
-        ui.mainPager.setAdapter(new MainViewPagerAdapter(getSupportFragmentManager()));
-        ui.mainPager.setOffscreenPageLimit(3);
-        ui.mainPager.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                return true;
+        setEnableSwipeVP();
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar!=null){
+            actionBar.hide();
+        }
+        ui.bottomNavView.setOnNavigationItemSelectedListener(item -> {
+            switch (item.getItemId()){
+                case R.id.main_nav:
+                    ui.mainPager.setCurrentItem(0);
+                    break;
+                case R.id.history_nav:
+                    ui.mainPager.setCurrentItem(1);
+                    break;
+                case R.id.settings_nav:
+                    ui.mainPager.setCurrentItem(2);
+                    break;
             }
+            return true;
         });
         //ui.mainPager.setPagingEnabled(false);
 //        viewModel = new MainViewModel();
@@ -44,6 +57,43 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        });
 //        setName();
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void setEnableSwipeVP() {
+        ui.mainPager.setAdapter(new MainViewPagerAdapter(getSupportFragmentManager(), FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT));
+        ui.mainPager.setOffscreenPageLimit(3);
+        ui.mainPager.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return true;
+            }
+        });
+        ui.mainPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener(){
+
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                switch (position){
+                    case 0: ui.bottomNavView.getMenu().findItem(R.id.main_nav).setChecked(true);
+                    break;
+                    case 1: ui.bottomNavView.getMenu().findItem(R.id.history_nav).setChecked(true);
+                        break;
+                    case 2: ui.bottomNavView.getMenu().findItem(R.id.settings_nav).setChecked(true);
+                        break;
+                }
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
 //    private void setName() {
